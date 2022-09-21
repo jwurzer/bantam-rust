@@ -18,9 +18,10 @@ This Rust port can be found on [github][rust] at https://github.com/jwurzer/bant
 [rust]: https://github.com/jwurzer/bantam-rust
 
 This Rust version is similar in structure and design to the original Java version.
-The error handling is done with the `panic!` macro. If a parsing error happened then
-an error message is printed and the program is stopped. For recoverable error
-handing checkout the branch `with-error-handling` instead of this `master` branch.
+The error handling is done with the type `Result<T, E>`. If an error happend then
+the variant `Err` with the type `ParseError` is used. `ParseError` includes the
+error message. For unrecoverable error handing with `panic!` checkout the branch `master`
+instead of this `with-error-handling` branch.
 
 ## Implementations & Ports
 

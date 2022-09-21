@@ -59,16 +59,25 @@ fn test(source: &str, expected: &str, passed: &mut i32, failed: &mut i32) {
     let mut parser: BantamParser = BantamParser::new(lexer);
 
     let result = parser.parse_expression();
-    let mut actual: String = String::new();
-    result.print(&mut actual);
+    match result {
+        Ok(expr) => {
+            let mut actual: String = String::new();
+            expr.print(&mut actual);
 
-    if actual == expected {
-        *passed += 1;
-        println!("[OK]: {}   ==>   result: {}", source, expected);
-    }
-    else {
-        *failed += 1;
-        println!("[FAIL] Expected: {}", expected);
-        println!("         Actual: {}", actual);
+            if actual == expected {
+                *passed += 1;
+                println!("[OK]: {}   ==>   result: {}", source, expected);
+            }
+            else {
+                *failed += 1;
+                println!("[FAIL] Expected: {}", expected);
+                println!("         Actual: {}", actual);
+            }
+        }
+        Err(err) => {
+            *failed += 1;
+            println!("[FAIL] Expected: {}", expected);
+            println!("          Error: {}", err);
+        }
     }
 }

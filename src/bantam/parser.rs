@@ -1,3 +1,4 @@
+use crate::bantam::parse_error::ParseError;
 use crate::bantam::token_type::TokenType;
 use crate::bantam::token::Token;
 use crate::bantam::expressions::expression::Expression;
@@ -26,30 +27,33 @@ impl Parser {
         self.infix_parselets.insert(token, Rc::from(parselet));
     }
 
-    pub fn parse_expression_precedence(&mut self, precedence: i32) -> Box<dyn Expression> {
+    pub fn parse_expression_precedence(&mut self, precedence: i32) -> Result<Box<dyn Expression>, ParseError> {
         let mut token: Token = self.consume();
 
         // Using Rc instead of Box. Otherwise: immutable borrow occurs here
         let prefix_opt: Option<&Rc<dyn PrefixParselet>> = self.prefix_parselets.get(token.token_type());
         if prefix_opt.is_none() {
-            panic!("Could not parse \"{}\".", token.text());
+            return Err(ParseError::new(format!("Could not parse \"{}\".", token.text())));
         }
         let prefix: Rc<dyn PrefixParselet> = prefix_opt.unwrap().clone();
 
-        let mut left: Box<dyn Expression> = prefix.parse(self, token);
+        let mut left: Result<Box<dyn Expression>, ParseError> = prefix.parse(self, token);
+        if left.is_err() {
+            return left;
+        }
 
         while precedence < self.get_precedence() {
             token = self.consume();
 
             let infix_opt: Option<&Rc<dyn InfixParselet>> = self.infix_parselets.get(token.token_type());
             let infix: Rc<dyn InfixParselet> = infix_opt.unwrap().clone();
-            left = infix.parse(self, left, token);
+            left = infix.parse(self, left.unwrap(), token);
         }
 
         return left;
     }
 
-    pub fn parse_expression(&mut self) -> Box<dyn Expression> {
+    pub fn parse_expression(&mut self) -> Result<Box<dyn Expression>, ParseError> {
         return self.parse_expression_precedence(0);
     }
 
@@ -63,13 +67,13 @@ impl Parser {
         return true;
     }
 
-    pub fn consume_expected(&mut self, expected: TokenType) -> Token {
+    pub fn consume_expected(&mut self, expected: TokenType) -> Result<Token, ParseError> {
         let token: Token = self.look_ahead(0);
         if *token.token_type() != expected {
-            panic!("Expected token {} and found {}", expected.to_string(), token.token_type().to_string());
+            return Err(ParseError::new(format!("Expected token {} and found {}", expected.to_string(), token.token_type().to_string())));
         }
 
-        return self.consume();
+        return Ok(self.consume());
     }
 
     pub fn consume(&mut self) -> Token {

@@ -1,3 +1,4 @@
+use crate::bantam::parse_error::ParseError;
 use crate::bantam::parser::Parser;
 use crate::bantam::precedence;
 use crate::bantam::token::Token;
@@ -81,7 +82,7 @@ impl BantamParser {
         self.register_infix(token, Box::new(BinaryOperatorParselet::new(precedence, true)));
     }
 
-    pub fn parse_expression(&mut self) -> Box<dyn Expression> {
+    pub fn parse_expression(&mut self) -> Result<Box<dyn Expression>, ParseError> {
         return self.parser.parse_expression();
     }
 }

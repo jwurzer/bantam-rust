@@ -1,4 +1,5 @@
 
+use crate::bantam::parse_error::ParseError;
 use crate::bantam::parser::Parser;
 use crate::bantam::token::Token;
 use crate::bantam::expressions::expression::Expression;
@@ -10,5 +11,5 @@ use crate::bantam::expressions::expression::Expression;
 /// This interface is also used for single-token expressions like variables, in
 /// which case parse() simply doesn't consume any more tokens.
 pub trait PrefixParselet {
-    fn parse(&self, parser: &mut Parser, token: Token) -> Box<dyn Expression>;
+    fn parse(&self, parser: &mut Parser, token: Token) -> Result<Box<dyn Expression>, ParseError>;
 }
