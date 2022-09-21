@@ -22,7 +22,7 @@ This Rust version is similar in structure and design to the original Java versio
 The error handling is done with the type `Result<T, E>`. If an error happend then
 the variant `Err` with the type `ParseError` is used. `ParseError` includes the
 error message. For unrecoverable error handing with `panic!` checkout the branch `master`
-instead of this `with-error-handling` branch.
+(https://github.com/jwurzer/bantam-rust) instead of this `with-error-handling` branch.
 
 ## Implementations & Ports
 
