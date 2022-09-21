@@ -13,9 +13,10 @@ The original bantam is implemented in Java (see: https://github.com/munificent/b
 
 ## About this Rust port
 
-This Rust port can be found on [github][rust] at https://github.com/jwurzer/bantam-rust.
+This Rust port with recoverable error handling can be found on [github][rust] at
+https://github.com/jwurzer/bantam-rust/tree/with-error-handling.
 
-[rust]: https://github.com/jwurzer/bantam-rust
+[rust]: https://github.com/jwurzer/bantam-rust/tree/with-error-handling
 
 This Rust version is similar in structure and design to the original Java version.
 The error handling is done with the type `Result<T, E>`. If an error happend then
